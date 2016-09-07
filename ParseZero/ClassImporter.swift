@@ -17,14 +17,14 @@ internal struct ClassImporter: Importer {
     pzero_log("Importing", objects.count, className)
     
     let objectIds = objects.filter({ (object) -> Bool in
-      return (object["objectId"] is String)
+      return (object["_id"] is String)
     }).map { (object) -> String in
-      return object["objectId"] as! String
+      return object["_id"] as! String
     }
     
     let d0 = NSDate.timeIntervalSinceReferenceDate()
     let query = PFQuery(className: className)
-    query.whereKey("objectId", containedIn: objectIds)
+    query.whereKey("_id", containedIn: objectIds)
     return query
       .fromLocalDatastore()
       .ignoreACLs()
@@ -36,15 +36,15 @@ internal struct ClassImporter: Importer {
           return hash
         })
         
-//        if let result = task.result as? [PFObject] where result.count >= objects.count {
-//          pzero_log("🎉 🎉 Skipping import for ", className)
-//          return BFTask.pzero_error(.SkippingClass, userInfo: ["className":className])
-//        }
+        if let result = task.result as? [PFObject] where result.count >= objects.count {
+          pzero_log("🎉 🎉 Skipping import for ", className)
+          return BFTask.pzero_error(.SkippingClass, userInfo: ["className":className])
+        }
         var erroredTasks = [BFTask]()
         
         let pfObjects = objects.map { (objectJSON) -> BFTask in
             
-            guard let objectId = objectJSON["objectId"] as? String else {
+            guard let objectId = objectJSON["_id"] as? String else {
               return BFTask.pzero_error(.MissingObjectIdKey)
             }
             if let originalObject = resultHash[objectId] {

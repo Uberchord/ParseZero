@@ -1,17 +1,17 @@
 {
   "ClassA": [
             {
-              "objectId": "1",
+              "_id": "1",
              "b": {
              "__type": "Pointer",
              "className": "ClassB",
-             "objectId": "4"
+             "_id": "4"
              }
             },
              {
-              "objectId": "2",
+              "_id": "2",
              },
              {
-              "objectId": "3",
+              "_id": "3",
              }
   ],

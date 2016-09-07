@@ -34,7 +34,7 @@ public class ParseZero: NSObject {
    ```
    { 
     "ClassName" : [{ 
-      "objectId": "id1",
+      "_id": "id1",
       "key" : "param", ...
     }, ... ] ,
    

@@ -81,7 +81,7 @@ struct RelationImporter:Importer {
       let sourceObjectTask = PFObject(withoutDataWithClassName: ownerClassName, objectId: owningId).fetchFromLocalDatastoreInBackground()
       pzero_log("Processing relations for", ownerClassName, ":", owningId, "->", relations.1.count, "objects")
       
-      let relationTask = PFQuery(className: targetClassName).whereKey("objectId", containedIn: relations.1).fromLocalDatastore().findObjectsInBackground()
+      let relationTask = PFQuery(className: targetClassName).whereKey("_id", containedIn: relations.1).fromLocalDatastore().findObjectsInBackground()
       // Fetch the owning id
       return BFTask(forCompletionOfAllTasksWithResults: [sourceObjectTask, relationTask])
           .continueWithBlock({ (task) -> AnyObject! in
