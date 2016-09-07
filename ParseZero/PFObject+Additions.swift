@@ -43,8 +43,8 @@ extension PFObject {
     var dictionary = data;
 
     // template date
-    let updatedAt = dateFromString(dictionary["updatedAt"] as? String)
-    let createdAt = dateFromString(dictionary["createdAt"] as? String)
+    let updatedAt = dateFromString(dictionary["_updated_at"] as? String)
+    let createdAt = dateFromString(dictionary["_created_at"] as? String)
     
     if let createdAt = createdAt  {
       self.setValue(createdAt, forKeyPath: "_pfinternal_state._createdAt")
@@ -52,27 +52,28 @@ extension PFObject {
     if let updatedAt = updatedAt {
       self.setValue(updatedAt, forKeyPath: "_pfinternal_state._updatedAt")
     }
-    if let objectId = dictionary["objectId"] as? String {
+    if let objectId = dictionary["_id"] as? String {
       self.setValue(objectId, forKeyPath: "_pfinternal_state._objectId")
     }
     
     // Remove Internals
-    dictionary.removeValueForKey("updatedAt")
-    dictionary.removeValueForKey("createdAt")
-    dictionary.removeValueForKey("objectId")
+    dictionary.removeValueForKey("_updated_at")
+    dictionary.removeValueForKey("_created_at")
+    dictionary.removeValueForKey("_id")
     
 
     for kv in dictionary {
       var value:AnyObject? = kv.1
       
       if let pointer = value as? JSONObject,
+        
         let type = pointer["__type"] as? String {
           // Reset the value
           value = nil
           switch type {
             case "Pointer":
               let pointerClassName = pointer["className"] as! String
-              let pointerObjectId = pointer["objectId"] as? String
+              let pointerObjectId = pointer["_id"] as? String
               value = PFObject(withoutDataWithClassName: pointerClassName, objectId: pointerObjectId)
             case "Date":
               if let date = dateFromString(pointer["iso"] as? String) {
@@ -96,7 +97,7 @@ extension PFObject {
           }
       }
       
-      if let acl = value as? JSONObject where kv.0 == "ACL" {
+      if let acl = value as? JSONObject where kv.0 == "_acl" {
           value = PFACL(dictionary: acl)
       }
       
