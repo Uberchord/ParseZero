@@ -65,8 +65,20 @@ extension PFObject {
     
 
     for kv in dictionary {
+      let key:String = kv.0
       var value:AnyObject? = kv.1
       
+      // parse pointer
+      if key.containsString("_p_") {
+        if let pointer = value as? String {
+          let pointerStringComponents = pointer.componentsSeparatedByString("$")
+          let pointerClassName = pointerStringComponents[0]
+          let pointerObjectId = pointerStringComponents[1]
+          value = PFObject(withoutDataWithClassName: pointerClassName, objectId: pointerObjectId)
+        }
+      }
+      
+      // parse different types of data inside another JSONObject
       if let pointer = value as? JSONObject,
         
         let type = pointer["__type"] as? String {
@@ -99,6 +111,7 @@ extension PFObject {
           }
       }
       
+      // parse acl
       if let acl = value as? JSONObject where kv.0 == "_acl" {
           value = PFACL(dictionary: acl)
       }

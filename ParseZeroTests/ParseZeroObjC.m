@@ -146,7 +146,7 @@
   XCTAssertEqual([objects count], 3);
   [self ensureOperationSetQueueIsEmpty:objs];
   // Fetch A1 to test if the Pointer is properly set
-  NSString *bName = [A1[@"b"] fetchFromLocalDatastore][@"name"];
+  NSString *bName = [A1[@"_p_learningPath"] fetchFromLocalDatastore][@"name"];
   XCTAssert([bName isEqualToString:@"Object4"], @"bname should be set to Object4 instead %@", bName);
    [self ensureOperationSetQueueIsEmpty:@[A1]];
 }

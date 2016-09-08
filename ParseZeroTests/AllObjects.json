@@ -6,7 +6,8 @@
              "__type": "Pointer",
              "className": "ClassB",
              "_id": "4"
-             }
+             },
+             "_p_learningPath" : "ClassB$4"
             },
              {
               "_id": "2",
