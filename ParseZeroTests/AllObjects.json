@@ -2,11 +2,6 @@
   "ClassA": [
             {
               "_id": "1",
-             "b": {
-             "__type": "Pointer",
-             "className": "ClassB",
-             "_id": "4"
-             },
              "_p_learningPath" : "ClassB$4"
             },
              {

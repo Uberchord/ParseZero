@@ -24,7 +24,7 @@ internal struct ClassImporter: Importer {
     
     let d0 = NSDate.timeIntervalSinceReferenceDate()
     let query = PFQuery(className: className)
-    query.whereKey("_id", containedIn: objectIds)
+    query.whereKey("objectId", containedIn: objectIds)
     return query
       .fromLocalDatastore()
       .ignoreACLs()
