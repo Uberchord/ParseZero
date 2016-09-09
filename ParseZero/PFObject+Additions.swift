@@ -69,12 +69,17 @@ extension PFObject {
       var value:AnyObject? = kv.1
       
       // parse pointer
-      if key.containsString("_p_") {
+      var isPointer = false
+      var unprefixedKey: String = key
+      let prefix = key.substringToIndex(key.startIndex.advancedBy(3))
+      if prefix == "_p_" {
         if let pointer = value as? String {
+          isPointer = true
           let pointerStringComponents = pointer.componentsSeparatedByString("$")
           let pointerClassName = pointerStringComponents[0]
           let pointerObjectId = pointerStringComponents[1]
           value = PFObject(withoutDataWithClassName: pointerClassName, objectId: pointerObjectId)
+          unprefixedKey = key.substringFromIndex(key.startIndex.advancedBy(3))
         }
       }
       
@@ -117,7 +122,11 @@ extension PFObject {
       }
       
       if let value = value {
-        self[kv.0] = value
+        if isPointer {
+          self[unprefixedKey] = value
+        } else {
+          self[kv.0] = value
+        }
       }
     }
     self.cleanupOperationQueue()

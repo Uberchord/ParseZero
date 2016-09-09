@@ -145,8 +145,18 @@
   objects = [[[[[A1 relationForKey:@"bs"] query] fromLocalDatastore] ignoreACLs] findObjects];
   XCTAssertEqual([objects count], 3);
   [self ensureOperationSetQueueIsEmpty:objs];
+  
+  // Check if we can query by pointer
+  PFObject *pObj = [PFObject objectWithoutDataWithClassName:@"ClassB" objectId:@"4"];
+  PFQuery *query = [PFQuery queryWithClassName:@"ClassA"];
+  [query whereKey:@"learningPath" equalTo:pObj];
+  NSArray *arr = [[[[query copy] fromPinWithName:PFObjectDefaultPin] ignoreACLs] findObjects];
+  XCTAssertEqual([arr count], 1);
+  PFObject *obj = arr[0];
+  XCTAssert([obj.objectId isEqualToString:@"1"]);
+  
   // Fetch A1 to test if the Pointer is properly set
-  NSString *bName = [A1[@"_p_learningPath"] fetchFromLocalDatastore][@"name"];
+  NSString *bName = [A1[@"learningPath"] fetchFromLocalDatastore][@"name"];
   XCTAssert([bName isEqualToString:@"Object4"], @"bname should be set to Object4 instead %@", bName);
    [self ensureOperationSetQueueIsEmpty:@[A1]];
 }
