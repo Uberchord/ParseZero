@@ -1,35 +1,31 @@
 {
   "ClassA": [
             {
-              "objectId": "1",
-             "b": {
-             "__type": "Pointer",
-             "className": "ClassB",
-             "objectId": "4"
-             }
+              "_id": "1",
+             "_p_learningPath" : "ClassB$4"
             },
              {
-              "objectId": "2",
-              "ACL": {
-                "*": {"read": true},
-                "user": {"read": true},
-                "role:administrator": {"read": true, "write": true},
+              "_id": "2",
+              "_acl": {
+                "*": {"r": true},
+                "user": {"r": true},
+                "role:administrator": {"r": true, "w": true},
               }
              },
              {
-              "objectId": "3",
+              "_id": "3",
              }
   ],
   "ClassB": [
             {
-             "objectId": "4",
+             "_id": "4",
              "name": "Object4"
             },
              {
-             "objectId": "5"
+             "_id": "5"
              },
              {
-             "objectId": "6"
+             "_id": "6"
              }
   ],
   "_Join:bs:ClassA:ClassB": [

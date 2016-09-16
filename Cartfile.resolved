@@ -1,2 +1,2 @@
-github "BoltsFramework/Bolts-iOS" "1.6.0"
-github "ParsePlatform/Parse-SDK-iOS-OSX" "1.12.0"
+github "BoltsFramework/Bolts-ObjC" "1.8.4"
+github "ParsePlatform/Parse-SDK-iOS-OSX" "1.14.2"

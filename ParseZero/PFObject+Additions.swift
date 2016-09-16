@@ -11,9 +11,11 @@ import Parse
 extension PFACL {
   convenience init(dictionary:JSONObject) {
     self.init()
+    
     for (k,v) in dictionary {
-      let setReadAccess = v["read"] as? Bool == true
-      let setWriteAccess = v["write"] as? Bool == true
+
+      let setReadAccess = v.objectForKey("read") as? Bool == true
+      let setWriteAccess = v.objectForKey("write") as? Bool == true
       
       if k == "*" {
         self.publicReadAccess = setReadAccess
@@ -43,8 +45,8 @@ extension PFObject {
     var dictionary = data;
 
     // template date
-    let updatedAt = dateFromString(dictionary["updatedAt"] as? String)
-    let createdAt = dateFromString(dictionary["createdAt"] as? String)
+    let updatedAt = dateFromString(dictionary["_updated_at"] as? String)
+    let createdAt = dateFromString(dictionary["_created_at"] as? String)
     
     if let createdAt = createdAt  {
       self.setValue(createdAt, forKeyPath: "_pfinternal_state._createdAt")
@@ -52,27 +54,45 @@ extension PFObject {
     if let updatedAt = updatedAt {
       self.setValue(updatedAt, forKeyPath: "_pfinternal_state._updatedAt")
     }
-    if let objectId = dictionary["objectId"] as? String {
+    if let objectId = dictionary["_id"] as? String {
       self.setValue(objectId, forKeyPath: "_pfinternal_state._objectId")
     }
     
     // Remove Internals
-    dictionary.removeValueForKey("updatedAt")
-    dictionary.removeValueForKey("createdAt")
-    dictionary.removeValueForKey("objectId")
+    dictionary.removeValueForKey("_updated_at")
+    dictionary.removeValueForKey("_created_at")
+    dictionary.removeValueForKey("_id")
     
 
     for kv in dictionary {
+      let key:String = kv.0
       var value:AnyObject? = kv.1
       
+      // parse pointer
+      var isPointer = false
+      var unprefixedKey: String = key
+      let prefix = key.substringToIndex(key.startIndex.advancedBy(3))
+      if prefix == "_p_" {
+        if let pointer = value as? String {
+          isPointer = true
+          let pointerStringComponents = pointer.componentsSeparatedByString("$")
+          let pointerClassName = pointerStringComponents[0]
+          let pointerObjectId = pointerStringComponents[1]
+          value = PFObject(withoutDataWithClassName: pointerClassName, objectId: pointerObjectId)
+          unprefixedKey = key.substringFromIndex(key.startIndex.advancedBy(3))
+        }
+      }
+      
+      // parse different types of data inside another JSONObject
       if let pointer = value as? JSONObject,
+        
         let type = pointer["__type"] as? String {
           // Reset the value
           value = nil
           switch type {
             case "Pointer":
               let pointerClassName = pointer["className"] as! String
-              let pointerObjectId = pointer["objectId"] as? String
+              let pointerObjectId = pointer["_id"] as? String
               value = PFObject(withoutDataWithClassName: pointerClassName, objectId: pointerObjectId)
             case "Date":
               if let date = dateFromString(pointer["iso"] as? String) {
@@ -96,12 +116,17 @@ extension PFObject {
           }
       }
       
-      if let acl = value as? JSONObject where kv.0 == "ACL" {
+      // parse acl
+      if let acl = value as? JSONObject where kv.0 == "_acl" {
           value = PFACL(dictionary: acl)
       }
       
       if let value = value {
-        self[kv.0] = value
+        if isPointer {
+          self[unprefixedKey] = value
+        } else {
+          self[kv.0] = value
+        }
       }
     }
     self.cleanupOperationQueue()

@@ -19,7 +19,7 @@ internal func dateFromString(string:String?) -> NSDate? {
   let dateFormatter = NSDateFormatter()
   dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
   dateFormatter.timeZone = NSTimeZone.defaultTimeZone()
-  dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-  
+  dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS+VVVV'"
+
   return dateFormatter.dateFromString(string)
 }
