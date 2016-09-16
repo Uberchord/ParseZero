@@ -44,7 +44,9 @@ enum PZeroErrorCode: Int {
 
 internal extension NSError {
   
-  internal static func pzero_error(code: PZeroErrorCode, var userInfo: [NSObject:AnyObject] = [:]) -> NSError {
+  internal static func pzero_error(code: PZeroErrorCode, userInfo: [NSObject:AnyObject] = [:]) -> NSError {
+    
+    var userInfo = userInfo
     
     if userInfo[NSLocalizedDescriptionKey] == nil
     {
