@@ -31,7 +31,8 @@ internal struct ClassImporter: Importer {
       .findObjectsInBackground()
       .continueWithSuccessBlock({ (task) -> AnyObject? in
         
-        let resultHash = (task.result as! [PFObject]).reduce([String:PFObject](), combine: { (var hash, object) -> [String:PFObject] in
+        let resultHash = (task.result as! [PFObject]).reduce([String:PFObject](), combine: { (hash, object) -> [String:PFObject] in
+          var hash = hash
           hash[object.objectId!] = object
           return hash
         })

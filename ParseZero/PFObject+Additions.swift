@@ -13,7 +13,7 @@ extension PFACL {
     self.init()
     
     for (k,v) in dictionary {
-
+      
       let setReadAccess = v.objectForKey("read") as? Bool == true
       let setWriteAccess = v.objectForKey("write") as? Bool == true
       

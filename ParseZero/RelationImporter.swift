@@ -31,7 +31,9 @@ struct RelationImporter:Importer {
   
   static func validateObjects(objects: ResultArray) -> BFTask? {
 
-    let errors = objects.reduce([BFTask]()) { (var memo, object) -> [BFTask] in
+    let errors = objects.reduce([BFTask]()) { (memo, object) -> [BFTask] in
+      var memo = memo
+      
       if let _ = object["owningId"] as? String,
         let _ = object["relatedId"] as? String {
           // do nothing
@@ -61,7 +63,8 @@ struct RelationImporter:Importer {
       return error
     }
     
-    return objects.reduce(StringsMap()) { (var memo, object) -> StringsMap in
+    return objects.reduce(StringsMap()) { (memo, object) -> StringsMap in
+      var memo = memo
       
       // we can force unpack here as it's validated
       let owningId = object["owningId"] as! String

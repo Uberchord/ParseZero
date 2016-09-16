@@ -64,8 +64,8 @@ public class ParseZero: NSObject {
     
     let initial = SplitResultTuples([], [])
     
-    let result = JSONObject.reduce(initial) { (var memo, value) -> SplitResultTuples in
-      
+    let result = JSONObject.reduce(initial) { (memo, value) -> SplitResultTuples in
+      var memo = memo
       // We have a _Join prefix
       if value.0.hasPrefix(kJoinPrefixString) {
         memo.joins.append(value)
@@ -98,7 +98,10 @@ public class ParseZero: NSObject {
       var classes:[ResultTuple]
       var toDoAndToSkip = ([ResultTuple](),[ResultTuple]())
       if let result = task.result as? [String:Int] {
-        toDoAndToSkip = tuples.classes.reduce(toDoAndToSkip, combine: { (var value, tuple) -> ([ResultTuple],[ResultTuple]) in
+        toDoAndToSkip = tuples.classes.reduce(toDoAndToSkip, combine: { (value, tuple) -> ([ResultTuple],[ResultTuple]) in
+          
+          var value = value
+          
           if result[tuple.0] == 0 {
             value.0.append(tuple)
           } else {
@@ -183,7 +186,7 @@ public class ParseZero: NSObject {
     
     
     let files = contents.map { (filePath) -> NSURL in
-      NSURL(fileURLWithPath: path).URLByAppendingPathComponent(filePath)
+      NSURL(fileURLWithPath: path).URLByAppendingPathComponent(filePath)!
     }
     pzero_log(files)
     return loadFiles(files)
@@ -200,7 +203,8 @@ public class ParseZero: NSObject {
     
     let initial = SplitNSURLTuples([],[])
     
-    let urls = files.reduce(initial) { (var memo, url) -> SplitNSURLTuples in
+    let urls = files.reduce(initial) { (memo, url) -> SplitNSURLTuples in
+      var memo = memo
       
       if url.lastPathComponent!.hasPrefix(kJoinPrefixString)
       {
